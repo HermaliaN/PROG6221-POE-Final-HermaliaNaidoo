@@ -122,5 +122,11 @@ namespace CyberBotWPF_Final
             ViewTasksWindow taskWindow = new ViewTasksWindow(taskManager);
             taskWindow.ShowDialog();
         }
+
+        private void StartQuiz_Click(object sender, RoutedEventArgs e)
+        {
+            QuizWindow quizWindow = new QuizWindow();
+            quizWindow.ShowDialog();
+        }
     }
 }

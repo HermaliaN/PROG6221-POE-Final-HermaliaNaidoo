@@ -1,0 +1,14 @@
+﻿<Window x:Class="CyberBotWPF_Final.QuizWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cybersecurity Quiz" Height="450" Width="600">
+    <Grid Margin="10">
+        <StackPanel>
+            <TextBlock x:Name="QuestionTextBlock" FontWeight="Bold" FontSize="16" TextWrapping="Wrap"/>
+            <ListBox x:Name="OptionsListBox" Margin="0,10" />
+            <Button Content="Submit Answer" Click="SubmitAnswer_Click" HorizontalAlignment="Right" Width="120" />
+            <TextBlock x:Name="FeedbackTextBlock" Margin="0,10" Foreground="DarkGreen" TextWrapping="Wrap"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
