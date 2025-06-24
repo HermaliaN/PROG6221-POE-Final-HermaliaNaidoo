@@ -1,22 +1,15 @@
-﻿using System.Text;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CyberBotWPF_Final
 {
-   
     public partial class MainWindow : Window
     {
         private User user;
         private Bot bot;
         private TaskManager taskManager = new TaskManager();
+        private NLPProcessor nlpProcessor;
 
         public MainWindow()
         {
@@ -33,7 +26,9 @@ namespace CyberBotWPF_Final
             bot = new Bot(user);
             bot.OnKeywordResponse += DisplayBotMessage;
 
-            DisplayBotMessage("", $"Nice to meet you, {user.Name}! You can ask me questions about cybersecurity or type 'Add task: your task here' to start managing your tasks.");
+            nlpProcessor = new NLPProcessor(taskManager, DisplayBotMessage, user);
+
+            DisplayBotMessage("", $"Nice to meet you, {user.Name}! You can ask me questions about cybersecurity or say things like 'Remind me to update my password tomorrow'.");
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
@@ -44,7 +39,7 @@ namespace CyberBotWPF_Final
             DisplayUserMessage(input);
             UserInputBox.Clear();
 
-            //exit handling
+            // Exit handling
             if (input.ToLower().Contains("exit"))
             {
                 DisplayBotMessage("", "Goodbye! Stay safe online.");
@@ -52,48 +47,11 @@ namespace CyberBotWPF_Final
                 return;
             }
 
-            //NLP - Add task detection
-            if (input.ToLower().StartsWith("add task:") || input.ToLower().StartsWith("add task -"))
-            {
-                HandleAddTask(input);
-                return;
-            }
+            // NLP-based interpretation
+            if (nlpProcessor.Process(input)) return;
 
-            //general chatbot interaction
+            // Generic keyword-based responses
             bot.Respond(input);
-        }
-
-        private void HandleAddTask(string input)
-        {
-            string[] parts = input.Split(new[] { "add task:" }, StringSplitOptions.RemoveEmptyEntries);
-            string taskTitle = input.Substring(input.IndexOf("add task", StringComparison.OrdinalIgnoreCase) + 9).TrimStart(':', '-', ' ');
-
-
-            if (string.IsNullOrWhiteSpace(taskTitle))
-            {
-                DisplayBotMessage("","Please provide a task title after 'Add task:'");
-                return;
-            }
-
-            string description = Microsoft.VisualBasic.Interaction.InputBox($"Enter a description for the task '{taskTitle}':", "Task Description");
-            string reminderInput = Microsoft.VisualBasic.Interaction.InputBox("Would you like to set a reminder? Enter number of days from now or leave blank:", "Reminder (Optional)");
-
-            DateTime? reminderDate = null;
-            if (int.TryParse(reminderInput, out int days))
-            {
-                reminderDate = DateTime.Now.AddDays(days);
-            }
-
-            TaskItem task = new TaskItem
-            {
-                Title = taskTitle,
-                Description = description,
-                ReminderDate = reminderDate,
-                IsCompleted = false
-            };
-
-            taskManager.AddTask(task);
-            DisplayBotMessage("",$"Task added: '{task.Title}'.{(reminderDate.HasValue ? $" I’ll remind you on {reminderDate.Value.ToShortDateString()}." : "")}");
         }
 
         private void DisplayUserMessage(string message)
