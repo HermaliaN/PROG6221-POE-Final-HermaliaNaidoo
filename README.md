@@ -70,3 +70,16 @@ Logic:
 ## License
 
 This project is for academic and educational purposes only.
+
+## References 
+Simplilearn, 2020. Natural Language Processing In 5 Minutes | What Is NLP And How Does It Work? [video online] Available at: <https://youtu.be/CMrHM8a3hqw?si=Vf_4yx27KqfegK9Y> [Accessed 24 June 2025].
+
+Bunny Labs, Tokenization Explained | Text Processing | Bunny Labs | LLM | NLU | NLP | Text. [video online] Available at: https://youtu.be/f0FuRvyTrLw?si=5r-Lq7XN2lYJmw0U [Accessed 24 June 2025].
+
+Microsoft Learn, 2025. Create a WPF app in Visual Studio. [online] Available at: <https://learn.microsoft.com/en-us/dotnet/desktop/wpf/get-started/create-app-visual-studio> [Accessed 24 June 2025].
+
+IIEVC School of Computer Science, 2021. PROG6221 - Building a WPF Application (with binding). [video online] Available at: <https://youtu.be/NZmaU4n7Hdo?si=0aizzCJyAUHkavka> [Accessed 24 June 2025].
+
+IIEVC School of Computer Science, 2025.CI Pipeline Integration in Visual Studio. [video online] Available at: <https://youtu.be/KBN9OoTxspw?si=fgYTlm-Da_5dTiYd> [Accessed 24 June 2025].
+
+OpenAI. 2025. ChatGPT(Version 4). [Large language model]. Available at: https://chatgpt.com/c/68050ee0-2cd0-8002-8684-bae79e6d18f9[Accessed: 24 June 2025].
