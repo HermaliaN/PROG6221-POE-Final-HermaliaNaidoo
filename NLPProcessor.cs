@@ -21,26 +21,27 @@ namespace CyberBotWPF_Final
             this.user = user;
         }
 
+        //Performed major updates to this method due to logical error found in testing
         public bool Process(string input)
         {
             input = input.ToLower();
 
-            //Pick up task reminder
-            if (input.Contains("remind me to") || input.Contains("can you remind me"))
+            // Log that NLP is in use
+            ActivityLog.Log("NLP triggered for processing.");
+
+            //Reminder-based input
+            if (input.Contains("remind me") || input.Contains("can you remind me"))
             {
                 string taskTitle = ExtractAfter(input, "remind me to");
                 if (string.IsNullOrWhiteSpace(taskTitle))
                     taskTitle = ExtractAfter(input, "can you remind me to");
 
-
-                //If the user hasn't said what the task is 
                 if (string.IsNullOrWhiteSpace(taskTitle))
                 {
                     displayBotMessage("", "Please specify what you'd like me to remind you about.");
                     return true;
                 }
 
-                //Displays a separate input box for the user to say how many days from today they need to be reminded
                 string reminderDays = Microsoft.VisualBasic.Interaction.InputBox("How many days from now should I remind you?", "Reminder Setup");
                 DateTime? reminderDate = null;
                 if (int.TryParse(reminderDays, out int days))
@@ -55,20 +56,33 @@ namespace CyberBotWPF_Final
                 };
 
                 taskManager.AddTask(task);
-                displayBotMessage("", $"Reminder set for '{task.Title}'{(reminderDate.HasValue ? $" on {reminderDate.Value.ToShortDateString()}." : ".")}");
 
-                //Log that a reminder has been set
-                ActivityLog.Log($"Reminder set for '{task.Title}'{(reminderDate.HasValue ? $" on { reminderDate.Value.ToShortDateString()}." : ".")}");
-                
+                string confirmation = $"Reminder set for '{task.Title}'{(reminderDate.HasValue ? $" on {reminderDate.Value.ToShortDateString()}." : ".")}";
+                displayBotMessage("", confirmation);
+                ActivityLog.Log(confirmation);
+
                 return true;
             }
 
-            //Task 1: Add Task 
-            if (input.Contains("add a task to") || input.Contains("set a reminder for"))
+            //Task creation input
+            if (
+                input.Contains("add task") || input.Contains("add a task") ||
+                input.Contains("set a reminder for") || input.Contains("add task to")
+            )
             {
                 string taskTitle = ExtractAfter(input, "add a task to");
                 if (string.IsNullOrWhiteSpace(taskTitle))
                     taskTitle = ExtractAfter(input, "set a reminder for");
+                if (string.IsNullOrWhiteSpace(taskTitle))
+                    taskTitle = ExtractAfter(input, "add task");
+                if (string.IsNullOrWhiteSpace(taskTitle))
+                    taskTitle = ExtractAfter(input, "add a task");
+
+                if (string.IsNullOrWhiteSpace(taskTitle))
+                {
+                    displayBotMessage("", "Please specify what the task is.");
+                    return true;
+                }
 
                 string description = Microsoft.VisualBasic.Interaction.InputBox($"Enter a description for '{taskTitle}'", "Task Description");
                 string reminderDays = Microsoft.VisualBasic.Interaction.InputBox("Do you want a reminder? Enter number of days from now or leave blank:", "Reminder (Optional)");
@@ -80,34 +94,34 @@ namespace CyberBotWPF_Final
                 var task = new TaskItem
                 {
                     Title = taskTitle.TrimEnd('.'),
-                    Description = description,
+                    Description = string.IsNullOrWhiteSpace(description) ? "No description provided." : description,
                     ReminderDate = reminderDate,
                     IsCompleted = false
                 };
 
                 taskManager.AddTask(task);
-                displayBotMessage("", $"Task added: '{task.Title}'.{(reminderDate.HasValue ? $" I’ll remind you on {reminderDate.Value.ToShortDateString()}." : "")}");
 
-                //Logs that a task has been added
-                ActivityLog.Log($"Task added: '{task.Title}'{(task.ReminderDate.HasValue ? $" (Reminder set for {task.ReminderDate.Value.ToShortDateString()})" : "")}");
+                string confirmation = $"Task added: '{task.Title}'." +
+                                      (reminderDate.HasValue ? $" I’ll remind you on {reminderDate.Value.ToShortDateString()}." : "");
+                displayBotMessage("", confirmation);
+                ActivityLog.Log(confirmation);
 
                 return true;
             }
 
-         
-            //Task 4: View activity log
-            if (input.Contains("what have you done for me") || input.Contains("show activity log"))
+            //Activity Log Request
+            if (input.Contains("what have you done for me") || input.Contains("show activity log") || input.Contains("activity log"))
             {
-                ViewActivityLogWindow logWindow = new ViewActivityLogWindow(); 
+                ViewActivityLogWindow logWindow = new ViewActivityLogWindow();
                 logWindow.ShowDialog();
+                ActivityLog.Log("Viewed activity log via NLP.");
                 return true;
             }
 
-            //Logs that NLP was triggered
-            ActivityLog.Log("NLP triggered for processing.");
-
+            // No recognized NLP command
             return false;
         }
+
 
         //Helper method for extrating words/phrases (tokenizing)
         private string ExtractAfter(string input, string phrase)

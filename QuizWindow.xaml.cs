@@ -39,7 +39,8 @@ namespace CyberBotWPF_Final
                 OptionsListBox.Items.Add(option);
             }
         }
-
+        
+        //updated click to ensure that if answer is incorrect then the user is notified
         private void SubmitAnswer_Click(object sender, RoutedEventArgs e)
         {
             if (OptionsListBox.SelectedIndex == -1)
@@ -49,14 +50,26 @@ namespace CyberBotWPF_Final
             }
 
             bool hasNext = quizManager.SubmitAnswer(OptionsListBox.SelectedIndex, out string explanation, out bool correct);
-            FeedbackTextBlock.Text = explanation;
+
+            // Add feedback prefix based on correctness
+            if (correct)
+            {
+                FeedbackTextBlock.Text = $"Correct!\n{explanation}";
+            }
+            else
+            {
+                // Get the correct answer text from the question
+                var currentQuestion = quizManager.GetLastQuestion(); // We'll write this helper next
+                string correctAnswer = currentQuestion.Options[currentQuestion.CorrectOptionIndex];
+
+                FeedbackTextBlock.Text = $"Incorrect. The correct answer is: \"{correctAnswer}\"\n{explanation}";
+            }
 
             if (hasNext)
             {
-                //wait before loading next question
                 Dispatcher.InvokeAsync(async () =>
                 {
-                    await Task.Delay(1800);
+                    await Task.Delay(2000); //waits a little longer before loading next question
                     LoadQuestion();
                 });
             }
@@ -65,7 +78,6 @@ namespace CyberBotWPF_Final
                 MessageBox.Show($"Quiz Complete!\n\nScore: {quizManager.Score}/{quizManager.TotalQuestions}\n" +
                     (quizManager.Score >= 8 ? "Great job! You're a cybersecurity pro!" : "Keep learning to stay safe online!"));
 
-                //logs that the quiz has been completed along with the score
                 ActivityLog.Log($"Quiz completed - Score: {quizManager.Score}/10");
 
                 this.Close();
