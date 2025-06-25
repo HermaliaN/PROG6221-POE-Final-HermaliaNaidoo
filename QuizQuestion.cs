@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CyberBotWPF_Final
 {
+    //stores the information per individual question
     public class QuizQuestion
     {
         public string QuestionText { get; set; }

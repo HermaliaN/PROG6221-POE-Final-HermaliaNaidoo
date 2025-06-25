@@ -5,6 +5,10 @@ using CyberBotWPF_Final;
 
 namespace CyberBotWPF_Final
 {
+    //Main changes made to this class in final part: 
+    // 1. Removed Sound Capability 
+    // 2. No more displaying to console, now reads to delegate SimpleResponseHandler to be dispalyed on WPF
+
     public class Bot
     {
         private string currentTopic = null;
@@ -25,6 +29,7 @@ namespace CyberBotWPF_Final
             OnKeywordResponse += HandleKeywordResponse;
         }
 
+        //Dictionary to hold possible input and reponses
         private Dictionary<string, List<string>> responses = new Dictionary<string, List<string>>
         {
             { "password", new List<string> {
@@ -70,6 +75,7 @@ namespace CyberBotWPF_Final
             }
         };
 
+        //Delegate to handle keyword responses
         private void HandleKeywordResponse(string keyword, string response)
         {
             OnSimpleResponse?.Invoke($"CBot: {response}");
@@ -80,6 +86,7 @@ namespace CyberBotWPF_Final
             }
         }
 
+        //In the event that a user asks a follow up question
         private bool IsFollowUp(string input)
         {
             string[] followUps = {
@@ -90,10 +97,12 @@ namespace CyberBotWPF_Final
             return followUps.Any(phrase => input.ToLower().Contains(phrase));
         }
 
+        //Main bot logic from Part 2
         public void Respond(string input)
         {
             try
             {
+                //Handles sentiments
                 string sentimentResponse = SentimentAnalysis.DetectSentiment(input);
                 if (sentimentResponse != null)
                 {
@@ -101,6 +110,8 @@ namespace CyberBotWPF_Final
                     return;
                 }
 
+
+                //Favourtite topic handling
                 if (input.Contains("i'm interested in") || input.Contains("i am interested in"))
                 {
                     string[] words = input.Split(' ');
@@ -115,6 +126,7 @@ namespace CyberBotWPF_Final
                     }
                 }
 
+                //Handles follow up
                 if (IsFollowUp(input) && currentTopic != null && responses.ContainsKey(currentTopic))
                 {
                     var followUpResponses = responses[currentTopic];
@@ -123,6 +135,7 @@ namespace CyberBotWPF_Final
                     return;
                 }
 
+                //Normal keyword response using delegate 
                 foreach (var keyword in responses.Keys)
                 {
                     if (input.ToLower().Contains(keyword))

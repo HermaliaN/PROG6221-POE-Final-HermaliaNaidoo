@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace CyberBotWPF_Final
 {
+
+    //All NLP is done by method of tokenizing (breaking sentences in this case input into words)
     public class NLPProcessor
     {
         private TaskManager taskManager;
@@ -23,18 +25,22 @@ namespace CyberBotWPF_Final
         {
             input = input.ToLower();
 
+            //Pick up task reminder
             if (input.Contains("remind me to") || input.Contains("can you remind me"))
             {
                 string taskTitle = ExtractAfter(input, "remind me to");
                 if (string.IsNullOrWhiteSpace(taskTitle))
                     taskTitle = ExtractAfter(input, "can you remind me to");
 
+
+                //If the user hasn't said what the task is 
                 if (string.IsNullOrWhiteSpace(taskTitle))
                 {
                     displayBotMessage("", "Please specify what you'd like me to remind you about.");
                     return true;
                 }
 
+                //Displays a separate input box for the user to say how many days from today they need to be reminded
                 string reminderDays = Microsoft.VisualBasic.Interaction.InputBox("How many days from now should I remind you?", "Reminder Setup");
                 DateTime? reminderDate = null;
                 if (int.TryParse(reminderDays, out int days))
@@ -43,13 +49,17 @@ namespace CyberBotWPF_Final
                 var task = new TaskItem
                 {
                     Title = taskTitle.TrimEnd('.'),
-                    Description = "Reminder task set via natural language.",
+                    Description = "Reminder for task set via natural language.",
                     ReminderDate = reminderDate,
                     IsCompleted = false
                 };
 
                 taskManager.AddTask(task);
                 displayBotMessage("", $"Reminder set for '{task.Title}'{(reminderDate.HasValue ? $" on {reminderDate.Value.ToShortDateString()}." : ".")}");
+
+                //Log that a reminder has been set
+                ActivityLog.Log($"Reminder set for '{task.Title}'{(reminderDate.HasValue ? $" on { reminderDate.Value.ToShortDateString()}." : ".")}");
+                
                 return true;
             }
 
@@ -99,6 +109,7 @@ namespace CyberBotWPF_Final
             return false;
         }
 
+        //Helper method for extrating words/phrases (tokenizing)
         private string ExtractAfter(string input, string phrase)
         {
             int index = input.IndexOf(phrase);
@@ -107,4 +118,11 @@ namespace CyberBotWPF_Final
         }
     }
 }
+
+/* References 
+* Simplilearn, 2020. Natural Language Processing In 5 Minutes | What Is NLP And How Does It Work? [video online] Available at: <https://youtu.be/CMrHM8a3hqw?si=Vf_4yx27KqfegK9Y> [Accessed 24 June 2025].
+* Bunny Labs, Tokenization Explained | Text Processing | Bunny Labs | LLM | NLU | NLP | Text. [video online] Available at: https://youtu.be/f0FuRvyTrLw?si=5r-Lq7XN2lYJmw0U [Accessed 24 June 2025].
+*/
+
+
 

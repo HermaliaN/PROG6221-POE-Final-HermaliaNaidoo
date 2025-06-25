@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CyberBotWPF_Final
 {
+    //Declares the logs dictionary
     public class ActivityLog
     {
         private static readonly List<string> logs = new List<string>();
@@ -16,15 +17,11 @@ namespace CyberBotWPF_Final
             logs.Add(entry);
         }
 
+        //Gets the 10 most recent logs
         public static List<string> GetRecentLogs(int count = 10)
         {
             int start = Math.Max(0, logs.Count - count);
             return logs.GetRange(start, logs.Count - start);
-        }
-
-        public static List<string> GetAllLogs()
-        {
-            return new List<string>(logs);
         }
     }
 }

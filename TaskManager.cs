@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CyberBotWPF_Final
 {
+    //Declares the everything to do with a task as well methods
     public class TaskItem
     {
         public string Title { get; set; }
@@ -18,21 +19,25 @@ namespace CyberBotWPF_Final
     {
         private List<TaskItem> tasks = new List<TaskItem>();
 
+        //Method for adding a task
         public void AddTask(TaskItem task)
         {
             tasks.Add(task);
         }
 
+        //Mehtod to retrieve tasks
         public List<TaskItem> GetTasks()
         {
             return tasks;
         }
 
+        //Method to delete a task
         public void DeleteTask(TaskItem task)
         {
             tasks.Remove(task);
         }
 
+        //Method to mark a task as complete
         public void MarkAsCompleted(TaskItem task)
         {
             task.IsCompleted = true;

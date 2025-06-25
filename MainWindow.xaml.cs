@@ -110,3 +110,12 @@ namespace CyberBotWPF_Final
         }
     }
 }
+
+/*The following resources to create all the XAML windows
+* Microsoft Learn, 2025. Create a WPF app in Visual Studio. [online] Available at: <https://learn.microsoft.com/en-us/dotnet/desktop/wpf/get-started/create-app-visual-studio> [Accessed 24 June 2025].
+* IIEVC School of Computer Science, 2021. PROG6221 - Building a WPF Application (with binding). [video online] Available at: <https://youtu.be/NZmaU4n7Hdo?si=0aizzCJyAUHkavka> [Accessed 24 June 2025].
+*/
+
+
+//CI Pipeline tutorial
+//IIEVC School of Computer Science, 2025.CI Pipeline Integration in Visual Studio. [video online] Available at: <https://youtu.be/KBN9OoTxspw?si=fgYTlm-Da_5dTiYd> [Accessed 24 June 2025].

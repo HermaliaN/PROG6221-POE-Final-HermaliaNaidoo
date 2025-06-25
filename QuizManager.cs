@@ -19,6 +19,7 @@ namespace CyberBotWPF_Final
 
         private void LoadQuestions()
         {
+            //Dictionary to hold all the questions, answers and feedback
             questions = new List<QuizQuestion>
             {
                 new QuizQuestion("What should you do if you receive an email asking for your password?",
@@ -65,17 +66,27 @@ namespace CyberBotWPF_Final
 
         public QuizQuestion GetCurrentQuestion() => questions[currentIndex];
 
+        //"Submits" the answer from the user, adds to score if correct and gives an explanation
         public bool SubmitAnswer(int selectedIndex, out string explanation, out bool isCorrect)
         {
             var q = questions[currentIndex];
             isCorrect = selectedIndex == q.CorrectOptionIndex;
 
             if (isCorrect) Score++;
+            
             explanation = q.Explanation;
+            
             currentIndex++;
             return currentIndex < questions.Count;
         }
 
+        //Determines how many questions the user has answered 
         public int TotalQuestions => questions.Count;
     }
 }
+
+/* References
+* OpenAI. 2025. ChatGPT(Version 4). [Large language model]. Available at: https://chatgpt.com/c/68050ee0-2cd0-8002-8684-bae79e6d18f9[Accessed: 24 June 2025].
+*
+* Used ChatGPT to generate the 10 questions and answers that are seen in the dictionary at the top of the class
+*/
