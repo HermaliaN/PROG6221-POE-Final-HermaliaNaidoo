@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace CyberBotWPF_Final
 {
@@ -63,6 +64,9 @@ namespace CyberBotWPF_Final
             {
                 MessageBox.Show($"Quiz Complete!\n\nScore: {quizManager.Score}/{quizManager.TotalQuestions}\n" +
                     (quizManager.Score >= 8 ? "Great job! You're a cybersecurity pro!" : "Keep learning to stay safe online!"));
+
+                //logs that the quiz has been completed along with the score
+                ActivityLog.Log($"Quiz completed - Score: {quizManager.Score}/10");
 
                 this.Close();
             }

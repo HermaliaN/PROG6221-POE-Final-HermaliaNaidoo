@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CyberBotWPF_Final
+{
+    public class ActivityLog
+    {
+        private static readonly List<string> logs = new List<string>();
+
+        public static void Log(string message)
+        {
+            string entry = $"{DateTime.Now:HH:mm} - {message}";
+            logs.Add(entry);
+        }
+
+        public static List<string> GetRecentLogs(int count = 10)
+        {
+            int start = Math.Max(0, logs.Count - count);
+            return logs.GetRange(start, logs.Count - start);
+        }
+
+        public static List<string> GetAllLogs()
+        {
+            return new List<string>(logs);
+        }
+    }
+}

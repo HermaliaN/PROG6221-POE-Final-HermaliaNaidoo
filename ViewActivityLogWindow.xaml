@@ -1,0 +1,17 @@
+﻿<Window x:Class="CyberBotWPF_Final.ViewActivityLogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Activity Log" Height="400" Width="600">
+    <Grid Margin="10">
+        <TextBlock Text="Recent Activities:" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <ListView x:Name="LogListView" Margin="0,30,0,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Time" Width="100" DisplayMemberBinding="{Binding Time}" />
+                    <GridViewColumn Header="Action" Width="450" DisplayMemberBinding="{Binding Message}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

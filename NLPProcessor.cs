@@ -53,6 +53,7 @@ namespace CyberBotWPF_Final
                 return true;
             }
 
+            //Task 1: Add Task 
             if (input.Contains("add a task to") || input.Contains("set a reminder for"))
             {
                 string taskTitle = ExtractAfter(input, "add a task to");
@@ -76,16 +77,24 @@ namespace CyberBotWPF_Final
 
                 taskManager.AddTask(task);
                 displayBotMessage("", $"Task added: '{task.Title}'.{(reminderDate.HasValue ? $" I’ll remind you on {reminderDate.Value.ToShortDateString()}." : "")}");
+
+                //Logs that a task has been added
+                ActivityLog.Log($"Task added: '{task.Title}'{(task.ReminderDate.HasValue ? $" (Reminder set for {task.ReminderDate.Value.ToShortDateString()})" : "")}");
+
                 return true;
             }
 
-            //To be implemented in task 4
-            //if (input.Contains("what have you done for me") || input.Contains("show activity log"))
-            //{
-             //   ActivityLogWindow logWindow = new ActivityLogWindow(); // Task 4
-              //  logWindow.ShowDialog();
-             //   return true;
-            //}
+         
+            //Task 4: View activity log
+            if (input.Contains("what have you done for me") || input.Contains("show activity log"))
+            {
+                ViewActivityLogWindow logWindow = new ViewActivityLogWindow(); 
+                logWindow.ShowDialog();
+                return true;
+            }
+
+            //Logs that NLP was triggered
+            ActivityLog.Log("NLP triggered for processing.");
 
             return false;
         }

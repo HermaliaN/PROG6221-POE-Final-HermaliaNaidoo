@@ -39,7 +39,7 @@ namespace CyberBotWPF_Final
             DisplayUserMessage(input);
             UserInputBox.Clear();
 
-            // Exit handling
+            //Exit handling
             if (input.ToLower().Contains("exit"))
             {
                 DisplayBotMessage("", "Goodbye! Stay safe online.");
@@ -47,10 +47,18 @@ namespace CyberBotWPF_Final
                 return;
             }
 
-            // NLP-based interpretation
+            //NLP-based interpretation
             if (nlpProcessor.Process(input)) return;
 
-            // Generic keyword-based responses
+            // NLP command to view activity log
+            if (input.ToLower().Contains("activity log") || input.ToLower().Contains("what have you done"))
+            {
+                ViewActivityLogWindow logWindow = new ViewActivityLogWindow();
+                logWindow.ShowDialog();
+                return;
+            }
+
+            //Generic keyword-based responses
             bot.Respond(input);
         }
 
@@ -60,7 +68,7 @@ namespace CyberBotWPF_Final
             {
                 Text = $"{user.Name}: {message}",
                 Margin = new Thickness(0, 5, 0, 5),
-                Foreground = System.Windows.Media.Brushes.Cyan
+                Foreground = System.Windows.Media.Brushes.DarkMagenta
             });
         }
 
@@ -71,7 +79,7 @@ namespace CyberBotWPF_Final
                 Text = $"CBot: {message}",
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 5, 0, 5),
-                Foreground = System.Windows.Media.Brushes.Yellow
+                Foreground = System.Windows.Media.Brushes.DarkCyan
             });
         }
 
@@ -79,12 +87,26 @@ namespace CyberBotWPF_Final
         {
             ViewTasksWindow taskWindow = new ViewTasksWindow(taskManager);
             taskWindow.ShowDialog();
+
+            //logs that tasks have been viewed
+            ActivityLog.Log("Viewed Task Window.");
+
         }
 
         private void StartQuiz_Click(object sender, RoutedEventArgs e)
         {
             QuizWindow quizWindow = new QuizWindow();
             quizWindow.ShowDialog();
+
+            //logs that a quiz has been started
+            ActivityLog.Log("Quiz started.");
+
+        }
+
+        private void ViewActivityLog_Click(object sender, RoutedEventArgs e)
+        {
+            ViewActivityLogWindow logWindow = new ViewActivityLogWindow();
+            logWindow.ShowDialog();
         }
     }
 }
