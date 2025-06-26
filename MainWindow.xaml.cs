@@ -24,7 +24,8 @@ namespace CyberBotWPF_Final
 
             user = new User(name);
             bot = new Bot(user);
-            bot.OnKeywordResponse += DisplayBotMessage;
+
+            bot.OnSimpleResponse += (response) => DisplayBotMessage("", response); 
 
             nlpProcessor = new NLPProcessor(taskManager, DisplayBotMessage, user);
 

@@ -16,9 +16,7 @@ namespace CyberBotWPF_Final
         private User user;
         private MemoryManager memory = new MemoryManager();
 
-        public delegate void KeywordResponseHandler(string keyword, string response);
-        public event KeywordResponseHandler OnKeywordResponse;
-
+        
         //added new delegate to handle normal responses (now allows for reponse to be displayed on WPF and not in console)
         public delegate void SimpleResponseHandler(string response);
         public event SimpleResponseHandler OnSimpleResponse;
@@ -26,7 +24,6 @@ namespace CyberBotWPF_Final
         public Bot(User user)
         {
             this.user = user;
-            OnKeywordResponse += HandleKeywordResponse;
         }
 
         //Dictionary to hold possible input and reponses
@@ -78,9 +75,13 @@ namespace CyberBotWPF_Final
         //Delegate to handle keyword responses
         private void HandleKeywordResponse(string keyword, string response)
         {
+            //Check if it's the user's favorite topic
+            bool isFavorite = memory.HasMemory("favouriteTopic") && keyword.Contains(memory.Recall("favouriteTopic").ToLower());
+
             OnSimpleResponse?.Invoke($"CBot: {response}");
 
-            if (memory.HasMemory("favouriteTopic") && keyword.Contains(memory.Recall("favouriteTopic").ToLower()))
+            //Then append the “interest” note only if relevant
+            if (isFavorite)
             {
                 OnSimpleResponse?.Invoke($"CBot: Since you're interested in {memory.Recall("favouriteTopic")}, this might be especially useful to you!");
             }
@@ -102,7 +103,7 @@ namespace CyberBotWPF_Final
         {
             try
             {
-                //Handles sentiments
+                // Sentiment analysis
                 string sentimentResponse = SentimentAnalysis.DetectSentiment(input);
                 if (sentimentResponse != null)
                 {
@@ -110,8 +111,7 @@ namespace CyberBotWPF_Final
                     return;
                 }
 
-
-                //Favourtite topic handling
+                // Favourite topic handling
                 if (input.Contains("i'm interested in") || input.Contains("i am interested in"))
                 {
                     string[] words = input.Split(' ');
@@ -126,25 +126,22 @@ namespace CyberBotWPF_Final
                     }
                 }
 
-                //Handles follow up
+                // Follow-up logic
                 if (IsFollowUp(input) && currentTopic != null && responses.ContainsKey(currentTopic))
                 {
-                    var followUpResponses = responses[currentTopic];
-                    string followUp = followUpResponses[random.Next(followUpResponses.Count)];
-                    OnKeywordResponse?.Invoke(currentTopic, followUp);
+                    string followUp = PickRandomResponse(currentTopic);
+                    SendBotResponse(currentTopic, followUp);
                     return;
                 }
 
-                //Normal keyword response using delegate 
+                // Keyword matching
                 foreach (var keyword in responses.Keys)
                 {
                     if (input.ToLower().Contains(keyword))
                     {
-                        var possibleResponses = responses[keyword];
-                        string chosenResponse = possibleResponses[random.Next(possibleResponses.Count)];
-
-                        OnKeywordResponse?.Invoke(keyword, chosenResponse);
+                        string response = PickRandomResponse(keyword);
                         currentTopic = keyword;
+                        SendBotResponse(keyword, response);
                         return;
                     }
                 }
@@ -154,6 +151,31 @@ namespace CyberBotWPF_Final
             catch (Exception ex)
             {
                 OnSimpleResponse?.Invoke($"CBot: Oops! Something went wrong. [Error: {ex.Message}]");
+            }
+        }
+
+
+        //helper method to pick random responses
+        private string PickRandomResponse(string keyword)
+        {
+            if (responses.ContainsKey(keyword))
+            {
+                List<string> possibleResponses = responses[keyword];
+                return possibleResponses[random.Next(possibleResponses.Count)];
+            }
+            return "Hmm... I don't seem to have any advice for that right now.";
+        }
+
+
+        //helper method that sends responses
+        private void SendBotResponse(string keyword, string message)
+        {
+            OnSimpleResponse?.Invoke($"CBot: {message}");
+
+            if (memory.HasMemory("favouriteTopic") &&
+                keyword.ToLower().Contains(memory.Recall("favouriteTopic").ToLower()))
+            {
+                OnSimpleResponse?.Invoke($"CBot: Since you're interested in {memory.Recall("favouriteTopic")}, this might be especially useful to you!");
             }
         }
     }
